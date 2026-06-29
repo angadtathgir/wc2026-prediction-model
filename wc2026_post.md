@@ -1,6 +1,8 @@
 # Predicting the 2026 World Cup With Math
 *June 29, 2026*
 
+> **Note:** This post contains LaTeX math. GitHub renders `$$...$$` blocks natively in Markdown — formulas should display correctly when viewed on github.com.
+
 ---
 
 ## Background
@@ -40,8 +42,7 @@ $$P(2\text{-}1) = \frac{e^{-\lambda_A} \lambda_A^2}{2!} \times \frac{e^{-\lambda
 Computing this for every scoreline from 0-0 to 6-6 produces a full matrix of probabilities. Summing the lower triangle gives P(Team A wins), the diagonal gives P(Draw), and the upper triangle gives P(Team B wins).
 
 ![Poisson scoreline grid for Brazil vs Japan](images/m1_Brazil_Japan.png)
-Each cell shows the probability of that exact scoreline. The bottom-left region (low-scoring draws) dominates because Brazil's conceded rate is very low, suppressing Japan's 
-$\lambda_B$.
+*Each cell shows the probability of that exact scoreline. The bottom-left region (low-scoring draws) dominates because Brazil's conceded rate is very low, suppressing Japan's $\lambda_B$.*
 
 ---
 
@@ -61,7 +62,7 @@ Elo alone is historical. It reflects accumulated performance but is blind to rec
 
 $$\text{form} = 0.25 \times r_1 + 0.35 \times r_2 + 0.40 \times r_3$$
 
-where $r_i \in \{0, 0.5, 1\}$ for Loss, Draw, Win respectively, and $r_3$ is the most recent match. A team coming off three wins scores 1.0, three losses scores 0.0, and a W/D/L sequence scores $0.40 \times 1 + 0.35 \times 0.5 + 0.25 \times 0 = 0.575$.
+where $r_i \in \{0, 0.5, 1\}$ for Loss, Draw, Win respectively, and $r_3$ is the most recent match. A team coming off three wins scores 1.0, three losses scores 0.0, and a W/D/L sequence (win oldest, loss most recent) scores $0.25 \times 1 + 0.35 \times 0.5 + 0.40 \times 0 = 0.425$.
 
 This form score shifts the Elo probability up or down:
 
@@ -86,7 +87,9 @@ This is the one that surprises people. The 2026 World Cup spans three countries 
 
 We compute the haversine distance between venues (the great-circle distance on a sphere):
 
-$$d = 2R \arctan\!\left(\sqrt{\frac{a}{1-a}}\right), \quad a = \sin^2\!\frac{\Delta\phi}{2} + \cos\phi_1 \cos\phi_2 \sin^2\!\frac{\Delta\lambda}{2}$$
+$$d = 2R \arctan\!\left(\sqrt{\frac{a}{1-a}}\right)$$
+
+$$a = \sin^2\!\left(\frac{\Delta\phi}{2}\right) + \cos\phi_1 \cos\phi_2 \sin^2\!\left(\frac{\Delta\lambda}{2}\right)$$
 
 where $R = 6371$ km, $\phi$ is latitude, and $\lambda$ is longitude. This gives exact distances between the 16 venue coordinates.
 
@@ -94,7 +97,7 @@ That distance feeds into a fatigue index blended with rest-day shortage:
 
 $$F = 0.60 \times \frac{d}{12000} \times 100 + 0.40 \times \frac{\max(0,\ 5 - \text{rest\_days})}{5} \times 100$$
 
-The 12,000 km normaliser is the realistic worst-case flight within the tournament (e.g., Vancouver to Mexico City is roughly 2,800 km; Vancouver to Miami is about 5,900 km). Five days is FIFA's own recommended minimum recovery period between matches. The 60/40 weighting reflects that travel is the larger physiological burden, but inadequate rest compounds it.
+The 12,000 km normaliser is the realistic worst-case flight within the tournament. For context, Vancouver to Miami is about 4,500 km and Vancouver to Mexico City is about 4,000 km — both substantial cross-continent journeys. Five days is FIFA's own recommended minimum recovery period between matches. The 60/40 weighting reflects that travel is the larger physiological burden, but inadequate rest compounds it.
 
 When one team arrives to a match more fatigued than the other, a penalty is applied proportional to the difference:
 
@@ -113,7 +116,7 @@ This one is admittedly niche, but the data exists and the effect is real. The 50
 
 Stricter referees break up play more, and more stoppages correlate with slightly fewer goals on average. We capture this by converting each referee's yellow-card rate into a z-score against the pool mean and standard deviation:
 
-$$z = \frac{y_{\text{ref}} - \bar{y}}{s_y}, \quad \bar{y} = 3.97, \quad s_y = 0.62$$
+$$z = \frac{y_{\text{ref}} - \bar{y}}{s_y}, \quad \bar{y} = 4.06, \quad s_y = 0.64$$
 
 The z-score then scales both teams' expected goals down proportionally:
 
@@ -126,7 +129,7 @@ The $\max(z, 0)$ means only referees stricter than average incur a penalty. An u
 Six R32 referee assignments were confirmed by FIFA before the tournament started. Those matches are assigned deterministically. All subsequent rounds draw randomly from the pool of 50.
 
 ![Top 15 strictest referees by career yellow-card rate](images/m4_referees.png)
-*The dashed line is the pool mean at 3.97 cards/game. Confirmed R32 appointments include Wilton Pereira Sampaio for Netherlands vs Morocco and Maurizio Mariani for Brazil vs Japan.*
+*The dashed line is the pool mean at 4.06 cards/game. Confirmed R32 appointments include Wilton Pereira Sampaio for Netherlands vs Morocco and Maurizio Mariani for Brazil vs Japan.*
 
 ---
 
