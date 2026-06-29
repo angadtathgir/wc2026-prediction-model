@@ -1,5 +1,5 @@
 # Predicting the 2026 World Cup With Math
-*June 29, 2026 · 14 min read*
+*June 29, 2026*
 
 ---
 
