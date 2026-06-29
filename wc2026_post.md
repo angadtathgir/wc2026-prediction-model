@@ -1,8 +1,6 @@
 # Predicting the 2026 World Cup With Math
 *June 29, 2026*
 
-> **Note:** This post contains LaTeX math. GitHub renders `$$...$$` blocks natively in Markdown — formulas should display correctly when viewed on github.com.
-
 ---
 
 ## Background
