@@ -1,9 +1,6 @@
 [predicting-2026-world-cup-with-math.md](https://github.com/user-attachments/files/29472417/predicting-2026-world-cup-with-math.md)
 # Predicting the 2026 World Cup With Math
-*June 29, 2026*
-
-> **Note on math rendering:** this file uses standard `$$...$$` (display) and `$...$` (inline) LaTeX delimiters. GitHub has rendered this natively since 2022, so the equations below will display correctly as long as the file is viewed on GitHub.com (not all third-party renderers support it).
-
+*June 30, 2026*
 ---
 
 ## Background
