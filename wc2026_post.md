@@ -41,9 +41,7 @@ Computing this for every scoreline from 0-0 to 6-6 produces a full matrix of pro
 
 ![Poisson scoreline grid for Brazil vs Japan](images/m1_Brazil_Japan.png)
 *Each cell shows the probability of that exact scoreline. The bottom-left region (low-scoring draws) dominates because Brazil's conceded rate is very low, suppressing Japan's 
-$$
-\lambda_B
-$$.*
+$\lambda_B$.*
 
 ---
 
