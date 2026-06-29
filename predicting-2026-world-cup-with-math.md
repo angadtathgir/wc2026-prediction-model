@@ -1,6 +1,6 @@
-[predicting-2026-world-cup-with-math.md](https://github.com/user-attachments/files/29472417/predicting-2026-world-cup-with-math.md)
 # Predicting the 2026 World Cup With Math
 *June 30, 2026*
+
 ---
 
 ## Background
@@ -93,7 +93,7 @@ where $R = 6371$ km, $\phi$ is latitude, and $\lambda$ is longitude. This gives 
 
 That distance feeds into a fatigue index blended with rest-day shortage:
 
-$$F = 0.60 \times \frac{d}{12000} \times 100 + 0.40 \times \frac{\max(0,\ 5 - \text{rest\_days})}{5} \times 100$$
+$$F = 0.60 \times \frac{d}{12000} \times 100 + 0.40 \times \frac{\max(0,\ 5 - \text{rest days})}{5} \times 100$$
 
 The 12,000 km normaliser is the realistic worst-case flight within the tournament. For context, Vancouver to Miami is about 4,500 km and Vancouver to Mexico City is about 4,000 km — both substantial cross-continent journeys. Five days is FIFA's own recommended minimum recovery period between matches. The 60/40 weighting reflects that travel is the larger physiological burden, but inadequate rest compounds it.
 
@@ -118,9 +118,9 @@ $$z = \frac{y_{\text{ref}} - \bar{y}}{s_y}, \quad \bar{y} = 4.06, \quad s_y = 0.
 
 The z-score then scales both teams' expected goals down proportionally:
 
-$$\text{ref\_factor} = 1 - 0.02 \times \max(z,\ 0)$$
+$$\text{ref factor} = 1 - 0.02 \times \max(z,\ 0)$$
 
-$$\lambda_A \leftarrow \lambda_A \times \text{ref\_factor}, \quad \lambda_B \leftarrow \lambda_B \times \text{ref\_factor}$$
+$$\lambda_A \leftarrow \lambda_A \times \text{ref factor}, \quad \lambda_B \leftarrow \lambda_B \times \text{ref factor}$$
 
 The $\max(z, 0)$ means only referees stricter than average incur a penalty. An unusually lenient referee is treated neutrally — there's no bonus for permissive officiating, partly because the effect is asymmetric (disruption suppresses goals clearly; permissiveness has diminishing positive returns).
 
