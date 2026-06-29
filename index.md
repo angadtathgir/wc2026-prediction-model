@@ -7,7 +7,7 @@
 
 Every four years, the world's most watched sporting event produces billions of predictions. Pundits fill airtime with opinions, fans run polls, and everyone has a hot take about who's going to win. Most of them are wrong, and the ones that are right are usually lucky.
 
-I wanted to try something different. I wanted to build a model where the uncertainty is the point — where instead of saying "Spain will win," you say "Spain wins in 32% of simulated universes, and here's exactly why."
+I wanted to try something different. I wanted to build a model where the uncertainty is the point ,  where instead of saying "Spain will win," you say "Spain wins in 32% of simulated universes, and here's exactly why."
 
 I should also be upfront about one personal bias going into this. I'm a Ronaldo fan. Before writing a single line of code, my gut said Portugal had a real shot. Most top pundits disagreed. So I ran the math myself, and the math, as you'll see, largely sided with the pundits. More on that in Model 5.
 
@@ -21,7 +21,7 @@ The model has five layers, each handling a different dimension of the problem.
 
 The starting point is the simplest question you can ask: given two teams, how many goals do we expect?
 
-Football goals follow a **Poisson distribution** reasonably well. The Poisson distribution models events that occur randomly and independently at some known average rate. The key assumption is that a goal happening at the 34th minute doesn't make a goal at the 67th minute more or less likely — each moment is independent. This isn't perfectly true in football (teams change their shape after going ahead, tiredness sets in), but it's a workable approximation and is standard in the academic literature on football prediction.
+Football goals follow a **Poisson distribution** reasonably well. The Poisson distribution models events that occur randomly and independently at some known average rate. The key assumption is that a goal happening at the 34th minute doesn't make a goal at the 67th minute more or less likely ,  each moment is independent. This isn't perfectly true in football (teams change their shape after going ahead, tiredness sets in), but it's a workable approximation and is standard in the academic literature on football prediction.
 
 The Poisson probability of observing exactly $k$ goals is:
 
@@ -54,7 +54,7 @@ The Elo win probability formula is:
 
 $$P_{\text{elo}}(\text{A beats B}) = \frac{1}{1 + 10^{-(R_A - R_B)/600}}$$
 
-This is a logistic function of the rating difference. At equal ratings ($R_A = R_B$), $P = 0.5$. Argentina (1877 pts) vs Cape Verde (1371 pts) gives a gap of 506 points and $P = 1/(1 + 10^{-506/600}) = 0.874$. The 600 in the denominator controls how steep the curve is — a larger divisor makes the probability less sensitive to rating differences, which is appropriate because football has more variance than chess.
+This is a logistic function of the rating difference. At equal ratings ($R_A = R_B$), $P = 0.5$. Argentina (1877 pts) vs Cape Verde (1371 pts) gives a gap of 506 points and $P = 1/(1 + 10^{-506/600}) = 0.874$. The 600 in the denominator controls how steep the curve is ,  a larger divisor makes the probability less sensitive to rating differences, which is appropriate because football has more variance than chess.
 
 Elo alone is historical. It reflects accumulated performance but is blind to recent momentum. To fix this, we compute a **form score** from each team's last three group matches, weighted toward the most recent result:
 
@@ -95,7 +95,7 @@ That distance feeds into a fatigue index blended with rest-day shortage:
 
 $$F = 0.60 \times \frac{d}{12000} \times 100 + 0.40 \times \frac{\max(0,\ 5 - \text{rest days})}{5} \times 100$$
 
-The 12,000 km normaliser is the realistic worst-case flight within the tournament. For context, Vancouver to Miami is about 4,500 km and Vancouver to Mexico City is about 4,000 km — both substantial cross-continent journeys. Five days is FIFA's own recommended minimum recovery period between matches. The 60/40 weighting reflects that travel is the larger physiological burden, but inadequate rest compounds it.
+The 12,000 km normaliser is the realistic worst-case flight within the tournament. For context, Vancouver to Miami is about 4,500 km and Vancouver to Mexico City is about 4,000 km ,  both substantial cross-continent journeys. Five days is FIFA's own recommended minimum recovery period between matches. The 60/40 weighting reflects that travel is the larger physiological burden, but inadequate rest compounds it.
 
 When one team arrives to a match more fatigued than the other, a penalty is applied proportional to the difference:
 
@@ -122,7 +122,7 @@ $$\text{ref factor} = 1 - 0.02 \times \max(z,\ 0)$$
 
 $$\lambda_A \leftarrow \lambda_A \times \text{ref factor}, \quad \lambda_B \leftarrow \lambda_B \times \text{ref factor}$$
 
-The $\max(z, 0)$ means only referees stricter than average incur a penalty. An unusually lenient referee is treated neutrally — there's no bonus for permissive officiating, partly because the effect is asymmetric (disruption suppresses goals clearly; permissiveness has diminishing positive returns).
+The $\max(z, 0)$ means only referees stricter than average incur a penalty. An unusually lenient referee is treated neutrally ,  there's no bonus for permissive officiating, partly because the effect is asymmetric (disruption suppresses goals clearly; permissiveness has diminishing positive returns).
 
 Six R32 referee assignments were confirmed by FIFA before the tournament started. Those matches are assigned deterministically. All subsequent rounds draw randomly from the pool of 50.
 
@@ -135,7 +135,7 @@ Six R32 referee assignments were confirmed by FIFA before the tournament started
 
 Here is where it gets personal.
 
-Every serious football fan has a sense that certain players elevate in high-stakes moments. Messi at the 2022 World Cup was a different player in the knockout rounds than the group stage. This isn't nostalgia — it's in the data.
+Every serious football fan has a sense that certain players elevate in high-stakes moments. Messi at the 2022 World Cup was a different player in the knockout rounds than the group stage. This isn't nostalgia ,  it's in the data.
 
 We measure this by computing a weighted output score (goals contribute 3 points, assists contribute 2) per appearance across group and knockout games, using 2022 World Cup box scores:
 
@@ -146,7 +146,7 @@ We measure this by computing a weighted output score (goals contribute 3 points,
 | Bellingham (ENG) | 1.0 | 1.0 | 0.0 |
 | Ronaldo (POR) | 1.5 | 0.0 | -1.5 |
 
-Messi's knockout output was 2.375x his group output. Ronaldo scored in the group stage and was benched for both knockout games. That's not a model assumption — that's what happened.
+Messi's knockout output was 2.375x his group output. Ronaldo scored in the group stage and was benched for both knockout games. That's not a model assumption ,  that's what happened.
 
 These translate into team-level modifiers applied to $\lambda$:
 
@@ -154,7 +154,7 @@ $$\lambda_A \leftarrow \lambda_A \times (1 + 0.06 \times m_A)$$
 
 Where $m_A$ is the clutch modifier: $+1.375$ for Argentina, $+1.125$ for France, $0$ for England, and $-0.5$ for Portugal. The coefficient $\varepsilon = 0.06$ is deliberately conservative, capping the full Argentina adjustment at about +8% and the Portugal penalty at about -3%.
 
-Portugal's overall championship probability lands at 5.06%. Is that too low? Possibly — Ronaldo has been prolific in the 2026 group stage and this modifier is locked to 2022 data. But the model can only work with what it has. The pundits who said Portugal wouldn't go far were likely making the same observation: Ronaldo's supporting cast doesn't match Argentina's or France's, and the historical knockout data doesn't work in their favour. The math and the pundits agree, which is uncomfortable when you're the one hoping for a different answer.
+Portugal's overall championship probability lands at 5.06%. Is that too low? Possibly ,  Ronaldo has been prolific in the 2026 group stage and this modifier is locked to 2022 data. But the model can only work with what it has. The pundits who said Portugal wouldn't go far were likely making the same observation: Ronaldo's supporting cast doesn't match Argentina's or France's, and the historical knockout data doesn't work in their favour. The math and the pundits agree, which is uncomfortable when you're the one hoping for a different answer.
 
 One honest limitation of this model: it's completely blind to defenders. Virgil van Dijk doesn't register in goals or assists, so his clutch-factor reads as zero, which understates Netherlands' knockout resilience. More sophisticated models track defensive actions (clearances, interceptions, pressure-applied), but that data isn't cleanly available in the same format across tournaments.
 
@@ -167,13 +167,13 @@ One honest limitation of this model: it's completely blind to defenders. Virgil 
 Each match simulation runs all five models in sequence, with each one feeding into the next:
 
 1. **Base $\lambda$** from Poisson attack/defence decomposition
-2. **ELO + Form scaling** — $\gamma_{\text{elo}} = 0.40$, form weight up to $\pm 5\%$
-3. **Fatigue adjustment** — up to $-5\%$ for the more-travelled team
-4. **Clutch modifier** — up to $\pm 8\%$ based on 2022 knockout data
-5. **Referee scaling** — up to $-2\%$ per standard deviation above pool mean
-6. **Host-nation bonus** — $+4\%$ for USA, Mexico, or Canada playing on home soil
+2. **ELO + Form scaling** ,  $\gamma_{\text{elo}} = 0.40$, form weight up to $\pm 5\%$
+3. **Fatigue adjustment** ,  up to $-5\%$ for the more-travelled team
+4. **Clutch modifier** ,  up to $\pm 8\%$ based on 2022 knockout data
+5. **Referee scaling** ,  up to $-2\%$ per standard deviation above pool mean
+6. **Host-nation bonus** ,  $+4\%$ for USA, Mexico, or Canada playing on home soil
 
-Goals are then drawn independently from $\text{Poisson}(\lambda_A)$ and $\text{Poisson}(\lambda_B)$. If scores are level after 90 minutes, a penalty shootout is resolved by a separate logistic function — same form as the Elo formula, but with a 300-point divisor instead of 600:
+Goals are then drawn independently from $\text{Poisson}(\lambda_A)$ and $\text{Poisson}(\lambda_B)$. If scores are level after 90 minutes, a penalty shootout is resolved by a separate logistic function ,  same form as the Elo formula, but with a 300-point divisor instead of 600:
 
 $$P(\text{A wins shootout}) = \frac{1}{1 + e^{-(R_A - R_B)/300}}$$
 
@@ -183,7 +183,7 @@ The narrower divisor (300 vs 600) makes penalties more sensitive to quality gaps
 
 ## The Bracket
 
-Before the simulations, it's worth looking at the structure we're running through. The bracket is fixed — no redraws.
+Before the simulations, it's worth looking at the structure we're running through. The bracket is fixed ,  no redraws.
 
 ![Real 2026 knockout bracket](images/bracket_tree.png)
 
@@ -197,11 +197,11 @@ Running five models for one match gives one number. Running them once through a 
 
 The solution is to run the full tournament 30,000 times, with different Poisson draws and different random referee assignments each time. The output is a complete probability distribution over every team winning the whole thing.
 
-![Championship probability — top 10 teams](images/mc_champion.png)
+![Championship probability ,  top 10 teams](images/mc_champion.png)
 
 Spain at **32.0%** is the clear model favourite. The combination of a perfect group stage (zero goals conceded), elite FIFA rating (1874 pts, second only to Argentina), and a relatively forgiving bracket path produces the highest simulated win rate.
 
-Argentina sits at 20.3%, meaningfully lower than Spain despite marginally higher FIFA points (1877 vs 1874). The difference comes almost entirely from bracket position — Argentina's path to the final is cleaner, but Spain's path after the final looks easier too given how the other semifinal shapes up.
+Argentina sits at 20.3%, meaningfully lower than Spain despite marginally higher FIFA points (1877 vs 1874). The difference comes almost entirely from bracket position ,  Argentina's path to the final is cleaner, but Spain's path after the final looks easier too given how the other semifinal shapes up.
 
 Mexico at 14.7% will look high to most readers. It is partly a model artefact: three wins with six goals scored and zero conceded in group stage produces an inflated Poisson $\lambda$, and the +4% home venue bonus at Estadio Azteca compounds it. This is a known limitation of using only group-stage data.
 
@@ -209,7 +209,7 @@ The survival curves break this down stage by stage:
 
 ![Survival curve to champion](images/mc_survival.png)
 
-France's curve is the most striking. They reach the semifinal in 71% of simulations — the highest of any team — but convert to a championship in only 12.6%. That gap reflects how their side of the bracket concentrates the competition: getting to the semis is manageable, but the final four on their side of the draw is brutal.
+France's curve is the most striking. They reach the semifinal in 71% of simulations ,  the highest of any team ,  but convert to a championship in only 12.6%. That gap reflects how their side of the bracket concentrates the competition: getting to the semis is manageable, but the final four on their side of the draw is brutal.
 
 ---
 
@@ -237,7 +237,7 @@ Thirty thousand simulated World Cups later:
 
 Portugal clocks in at 5.06%. The math sided with the pundits. I ran it anyway, because that's the point: sometimes you want to understand exactly why the thing you're hoping for is unlikely, rather than just being told it is.
 
-The bracket matters more than most pre-tournament analysis acknowledges. Switzerland has a 93% chance of making the Round of 16 and a 0.46% chance of winning the trophy — not because they're a bad team, but because of the sequence of opponents the bracket puts in front of them if they keep winning.
+The bracket matters more than most pre-tournament analysis acknowledges. Switzerland has a 93% chance of making the Round of 16 and a 0.46% chance of winning the trophy ,  not because they're a bad team, but because of the sequence of opponents the bracket puts in front of them if they keep winning.
 
 Football is not deterministic. The model doesn't know who will win. It knows, fairly precisely, what the distribution of outcomes looks like given everything we can measure. That's a different and more honest thing to say.
 
