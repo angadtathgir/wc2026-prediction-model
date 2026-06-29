@@ -1,6 +1,5 @@
 # Predicting the 2026 World Cup With Math
 *June 29, 2026*
-
 ---
 
 ## Background
@@ -70,7 +69,7 @@ The coefficient 0.10 caps the form adjustment at ±5 percentage points, so it nu
 
 Finally, the adjusted probability rescales the Poisson $\lambda$ values:
 
-$$\lambda_A \leftarrow \lambda_A \times \bigl(1 + 0.40 \times (P_{\text{adj},A} - 0.5)\bigr)$$
+$$\lambda_A \leftarrow \lambda_A \times \left(1 + 0.40 \times (P_{\text{adj},A} - 0.5)\right)$$
 
 The 0.40 coefficient (called $\gamma_{\text{elo}}$ in the code) controls how much weight the Elo signal gets relative to the raw goal-rate signal. At $P_{\text{adj}} = 0.5$ (exactly equal teams), the $\lambda$ is unchanged. At $P_{\text{adj}} = 0.75$ (strong favourite), $\lambda$ is scaled up by $1 + 0.40 \times 0.25 = 1.10$, a 10% boost.
 
@@ -152,7 +151,7 @@ These translate into team-level modifiers applied to $\lambda$:
 
 $$\lambda_A \leftarrow \lambda_A \times (1 + 0.06 \times m_A)$$
 
-Where $m_A$ is the clutch modifier: $+1.375$ for Argentina, $+1.125$ for France, $0$ for England, and $-0.5$ for Portugal. The coefficient $\varepsilon = 0.06$ is deliberately conservative, capping the full Argentina adjustment at about +8% and the Portugal penalty at -3%.
+Where $m_A$ is the clutch modifier: $+1.375$ for Argentina, $+1.125$ for France, $0$ for England, and $-0.5$ for Portugal. The coefficient $\varepsilon = 0.06$ is deliberately conservative, capping the full Argentina adjustment at about +8% and the Portugal penalty at about -3%.
 
 Portugal's overall championship probability lands at 5.06%. Is that too low? Possibly — Ronaldo has been prolific in the 2026 group stage and this modifier is locked to 2022 data. But the model can only work with what it has. The pundits who said Portugal wouldn't go far were likely making the same observation: Ronaldo's supporting cast doesn't match Argentina's or France's, and the historical knockout data doesn't work in their favour. The math and the pundits agree, which is uncomfortable when you're the one hoping for a different answer.
 
