@@ -9,7 +9,7 @@ Every four years, the world's most watched sporting event produces billions of p
 
 I wanted to try something different. I wanted to build a model where the uncertainty is the point — where instead of saying "Spain will win," you say "Spain wins in 32% of simulated universes, and here's exactly why."
 
-I should also be upfront about one personal bias going into this. I'm a Ronaldo fan. Before writing a single line of code, my gut said Portugal had a real shot. Most top pundits disagreed. So I ran the math myself, and the math — as you'll see — largely sided with the pundits. More on that in Model 5.
+I should also be upfront about one personal bias going into this. I'm a Ronaldo fan. Before writing a single line of code, my gut said Portugal had a real shot. Most top pundits disagreed. So I ran the math myself, and the math, as you'll see, largely sided with the pundits. More on that in Model 5.
 
 The 2026 World Cup is the biggest in history: 48 teams, three host nations (USA, Mexico, Canada), and a brand new Round of 32. By the time the group stage finished, 215 goals had been scored across 72 matches. That's the foundation everything is built on.
 
