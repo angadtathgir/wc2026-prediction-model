@@ -245,6 +245,6 @@ Full code, data sources, and instructions to run your own simulations are on Git
 
 ---
 
-*Code: [github.com/angadtathgir](https://github.com/angadtathgir)*
+*[wc2026_model_v3.py](wc2026_model_v3.py)*
 
 *Data sources: Yahoo Sports, CBS Sports, Sky Sports, ESPN bracket tool, FIFA.com. Referee data from footymetrics.com (Opta-grade). FIFA ranking points from the official 11 June 2026 release.*
