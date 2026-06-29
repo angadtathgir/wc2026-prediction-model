@@ -39,7 +39,7 @@ $$P(2\text{-}1) = \frac{e^{-\lambda_A} \lambda_A^2}{2!} \times \frac{e^{-\lambda
 Computing this for every scoreline from 0-0 to 6-6 produces a full matrix of probabilities. Summing the lower triangle gives P(Team A wins), the diagonal gives P(Draw), and the upper triangle gives P(Team B wins).
 
 ![Poisson scoreline grid for Brazil vs Japan](images/m1_Brazil_Japan.png)
-*Each cell shows the probability of that exact scoreline. The bottom-left region (low-scoring draws) dominates because Brazil's conceded rate is very low, suppressing Japan's $\lambda_B$.*
+Each cell shows the probability of that exact scoreline. The bottom-left region (low-scoring draws) dominates because Brazil's conceded rate is very low, suppressing Japan's $\lambda_B$.
 
 ---
 
