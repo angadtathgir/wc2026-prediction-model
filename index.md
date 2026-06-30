@@ -42,6 +42,8 @@ Computing this for every scoreline from 0-0 to 6-6 produces a full matrix of pro
 ![Poisson scoreline grid for Brazil vs Japan](images/m1_Brazil_Japan.png)
 Each cell shows the probability of that exact scoreline. The bottom-left region (low-scoring draws) dominates because Brazil's conceded rate is very low, suppressing Japan's $\lambda_B$.
 
+> **What I'd change:** Pure goal counts reward thrashings of weak teams ,  Germany's 7-1 over Curaçao inflates their attack rating in a way that says nothing about how they'd fare against Spain. A shots-on-target or xG-based input would be more honest than raw goals, if that data were as cleanly available at group-stage.
+
 ---
 
 ## Model 2: FIFA Elo Ratings + Recent Form
@@ -77,6 +79,8 @@ The 0.40 coefficient (called $\gamma_{\text{elo}}$ in the code) controls how muc
 ![FIFA rating vs group-stage scoring rate](images/m2_fifa_vs_goals.png)
 *Each point is a team. Colour encodes goals conceded (green = tight, red = leaky). Argentina and Spain sit top-right: both elite ratings and high scoring efficiency.*
 
+> **What I'd change:** The 600-point divisor and the 0.40 weighting coefficient ($\gamma_{\text{elo}}$) are both judgment calls, not fitted parameters. A future version would backtest these against several past tournaments and pick the values that minimize prediction error, rather than picking numbers that "feel right."
+
 ---
 
 ## Model 3: Travel Fatigue
@@ -106,6 +110,8 @@ At most this is a 5% reduction, but the relative advantage it creates for the fr
 ![Fatigue index for Round of 32 teams](images/m3_fatigue.png)
 *Red bars exceed 50 (high fatigue), amber is 30-50, green is below 30. Teams crossing between host nations incur the largest penalties.*
 
+> **What I'd change:** This treats every player as equally affected by travel, but altitude (Mexico City) and heat (Miami in summer) are physiologically distinct stressors that a single distance number flattens into one. Splitting fatigue into separate altitude/heat/distance terms would be more honest about what's actually draining a squad.
+
 ---
 
 ## Model 4: Referee Strictness
@@ -128,6 +134,8 @@ Six R32 referee assignments were confirmed by FIFA before the tournament started
 
 ![Top 15 strictest referees by career yellow-card rate](images/m4_referees.png)
 *The dashed line is the pool mean at 4.06 cards/game. Confirmed R32 appointments include Wilton Pereira Sampaio for Netherlands vs Morocco and Maurizio Mariani for Brazil vs Japan.*
+
+> **What I'd change:** This is the weakest-evidenced layer in the model ,  a 2% per-standard-deviation penalty is a reasonable guess, not a measured effect, and I haven't seen a rigorous study isolating referee strictness from team-quality confounds. I kept it because the data was available and the direction is intuitive, but I'd weight it lower, or drop it, before trusting this layer in a higher-stakes version.
 
 ---
 
@@ -160,6 +168,8 @@ One honest limitation of this model: it's completely blind to defenders. Virgil 
 
 ![2022 WC clutch output splits and model modifiers](images/m5_clutch.png)
 
+> **What I'd change:** This layer is blind to defenders ,  Van Dijk registers a flat zero because clean sheets aren't goals or assists, which understates Netherlands' knockout resilience. Tracking clearances, interceptions, and duels won would fix this, but that data isn't available in a consistent format across tournaments yet.
+
 ---
 
 ## Combining Everything
@@ -178,6 +188,31 @@ Goals are then drawn independently from $\text{Poisson}(\lambda_A)$ and $\text{P
 $$P(\text{A wins shootout}) = \frac{1}{1 + e^{-(R_A - R_B)/300}}$$
 
 The narrower divisor (300 vs 600) makes penalties more sensitive to quality gaps, which reflects the reality that technically superior teams do convert penalties at higher rates, even though there's significant inherent randomness.
+
+### How the layers flow
+
+```
+ Poisson          Elo + Form          Fatigue            Clutch            Referee + Host          Monte Carlo
+ (base λ)    ──▶   (±10% to λ)   ──▶   (−5% max)    ──▶   (±8% max)   ──▶   (−2%/σ, +4% host)  ──▶   (30,000 runs)
+attack/defence     quality +          travel +           2022 knockout     card rate +              draw goals,
+decomposition      momentum           rest-day gap       output data       home-soil bonus          resolve bracket,
+                                                                                                       repeat
+```
+
+Each layer rescales the λ the previous one produced ,  this is a multiplicative chain, not a weighted vote. A team only ends up heavily favoured if several independent signals agree with each other, which is effectively a sequential ensemble.
+
+### Comparing the five layers
+
+| Layer | Max swing on λ | What it captures | Strength | Weakness |
+|---|---|---|---|---|
+| M1 ,  Poisson | base | Raw goal-scoring rate | Foundation every other layer builds on | Treats all goals equally, regardless of opponent strength |
+| M2 ,  Elo + Form | ±10% | Team quality + recent momentum | Best-evidenced signal, corrects for weak-opponent inflation | Coefficients ($\gamma_{\text{elo}}$, divisor) are hand-picked, not fitted |
+| M3 ,  Fatigue | −5% | Travel distance + rest shortage | Captures a real, under-discussed factor | Flattens altitude, heat, and distance into one number |
+| M4 ,  Referee | −2%/σ | Officiating strictness | Real, measurable card-rate data | Weakest causal link ,  goal-suppression effect is a reasonable guess, not a study |
+| M5 ,  Clutch | ±8% | Star-player knockout elevation | Powerful for star-driven teams (Argentina, France) | Blind to defenders; locked to 2022 data |
+| Host bonus | +4% | Home-soil advantage | Simple, intuitive | Calibrated assumption, not regression-derived |
+
+If I were to turn this into a true ensemble rather than a fixed chain, the next step would be fitting each layer's coefficient (the 0.40 Elo weight, the 0.05 fatigue weight, $\varepsilon = 0.06$, the 0.02 referee weight) against several past World Cups at once ,  letting the data decide how much each signal should move the needle, instead of hand-picked caps.
 
 ---
 
